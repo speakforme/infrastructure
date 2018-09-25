@@ -61,7 +61,7 @@ resource "aws_route53_record" "storage-a" {
 
 resource "aws_route53_record" "speakforme-a" {
   zone_id = "${aws_route53_zone.speakforme-in.id}"
-  name    = "@"
+  name    = "speakforme.in"
   type    = "A"
   ttl     = "300"
   records = ["104.198.14.52"]
@@ -107,4 +107,50 @@ resource "aws_route53_record" "www" {
   type    = "CNAME"
   ttl     = "1800"
   records = ["speakforme.netlify.com."]
+}
+
+// MX Records
+
+resource "aws_route53_record" "email-mx" {
+  zone_id = "${aws_route53_zone.speakforme-in.id}"
+  name    = "email"
+  type    = "MX"
+  ttl     = "1800"
+
+  records = [
+    "10 mx.postal.speakforme.in.",
+  ]
+}
+
+resource "aws_route53_record" "routes-mx" {
+  zone_id = "${aws_route53_zone.speakforme-in.id}"
+  name    = "routes"
+  type    = "MX"
+  ttl     = "1800"
+
+  records = [
+    "10 mx.postal.speakforme.in.",
+  ]
+}
+
+resource "aws_route53_record" "speakforme-mx" {
+  zone_id = "${aws_route53_zone.speakforme-in.id}"
+  name    = "speakforme.in"
+  type    = "MX"
+  ttl     = "1800"
+
+  records = [
+    "10 mx.postal.speakforme.in.",
+  ]
+}
+
+resource "aws_route53_record" "info-mx" {
+  zone_id = "${aws_route53_zone.speakforme-in.id}"
+  name    = "info"
+  type    = "MX"
+  ttl     = "1800"
+
+  records = [
+    "10 feedback-smtp.us-east-1.amazonses.com.",
+  ]
 }
