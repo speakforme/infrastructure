@@ -14,3 +14,11 @@ resource "aws_instance" "mainserver" {
     terraform = "true"
   }
 }
+
+// Mail Server Elastic IP
+resource "aws_eip" "mailserver" {}
+
+resource "aws_eip_association" "mailserver" {
+  instance_id   = "${aws_instance.mainserver.id}"
+  allocation_id = "${aws_eip.mailserver.id}"
+}
