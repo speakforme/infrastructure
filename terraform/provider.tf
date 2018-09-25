@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "ap-south-1"
+  region  = "eu-west-1"
   version = "~> 1.37"
   profile = "speakforme"
 }
