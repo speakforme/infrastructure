@@ -115,9 +115,10 @@ resource "aws_route53_record" "email-mx" {
   zone_id = "${aws_route53_zone.speakforme-in.id}"
   name    = "email"
   type    = "MX"
-  ttl     = "1800"
+  ttl     = "60"
 
   records = [
+    "10 ${aws_eip.mailserver.public_ip}",
     "10 mx.postal.speakforme.in.",
   ]
 }

@@ -3,6 +3,7 @@ resource "aws_security_group" "mailserver" {
   description = "Mail Server security group"
 
   tags {
+    Name      = "mailserver"
     terraform = true
   }
 }
@@ -12,6 +13,7 @@ resource "aws_security_group" "common" {
   description = "Common security group"
 
   tags {
+    Name      = "common"
     terraform = true
   }
 }
