@@ -7,7 +7,10 @@ resource "aws_instance" "mainserver" {
   key_name      = "${aws_key_pair.nemo.key_name}"
 
   // default VPC so name instead of ID
-  security_groups = ["${aws_security_group.mailserver.name}"]
+  security_groups = ["${list(
+    aws_security_group.mailserver.name,
+    aws_security_group.common.name,
+  )}"]
 
   tags {
     Name      = "mainserver"
@@ -16,7 +19,10 @@ resource "aws_instance" "mainserver" {
 }
 
 // Mail Server Elastic IP
-resource "aws_eip" "mailserver" {}
+// 13.127.221.166
+resource "aws_eip" "mailserver" {
+  name = "mailserver"
+}
 
 resource "aws_eip_association" "mailserver" {
   instance_id   = "${aws_instance.mainserver.id}"
