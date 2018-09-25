@@ -1,0 +1,4 @@
+resource "aws_key_pair" "nemo" {
+  key_name   = "nemo-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhOPqWd9KPsLoVYmoXemp1s4eUwZCOHEmxqRDS+NnOg63vr+F5YKs7XdzS4MCyzHnQ2PshR017ekiN1UvRyQkAZYBT5Doil5OCSM4MBzZYWsy6Koj8mhdKhJQeOzLZrU5lelhAvjJdTxdgjtScjHsdQ2m8PN4hWmW2hOkMVGWh4zDsowiHOjChLSg65m+xrpj3o1iigCT0jLUdAM78MZVeOvZYNJwYJ2aSZZ2+RR0jSUwaq9bkDS6T3pR+eF7Gy58ziCdW0YIfqk8D+jlLN2LA7+AxFgTziyEmsTP4H2zXtrZjBUVizp5vOED60LJp7yfPlooafXmHL1bUKcUTTzuh"
+}
