@@ -21,7 +21,10 @@ resource "aws_instance" "mainserver" {
 // Mail Server Elastic IP
 // 13.127.221.166
 resource "aws_eip" "mailserver" {
-  name = "mailserver"
+  tags {
+    Name      = "mailserver"
+    terraform = "true"
+  }
 }
 
 resource "aws_eip_association" "mailserver" {
