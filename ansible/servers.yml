@@ -19,13 +19,14 @@
         groups: sudo
       - name: jace
         groups: sudo
+    # See documentation at https://galaxy.ansible.com/oefenweb/postfix
     postfix_hostname: email.speakforme.in
     postfix_mailname: email.speakforme.in
     postfix_aliases:
       - user: root
-        alias: sesverified@yourdomain.org
-    postfix_relayhost: email-smtp.us-east-1.amazonaws.com
+        alias: sesverified@email.speakforme.in
+    postfix_relayhost: email-smtp.eu-west-1.amazonaws.com
     postfix_relaytls: true
     # AWS IAM SES credentials (not access key):
-    postfix_sasl_user: AKIXXXXXXXXXXXXXXXXX
-    postfix_sasl_password: ASDFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    postfix_sasl_user: "{{ses_user}}"
+    postfix_sasl_password: "{{ses_password}}"
