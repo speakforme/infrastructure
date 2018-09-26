@@ -19,8 +19,8 @@ resource "aws_ses_receipt_rule" "store-and-acknowledge" {
 
   lambda_action {
     function_arn    = "${aws_lambda_function.store-and-ack.arn}"
-    invocation_type = "RequestResponse"
-    position        = 2
+    invocation_type = "Event"
+    position        = 1
   }
 
   # s3_action {
