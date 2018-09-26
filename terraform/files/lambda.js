@@ -1,6 +1,5 @@
-const AWS = require('aws-sdk');
+var AWS = require('aws-sdk');
 AWS.config.update({ region: 'eu-west-1' });
-const ses = new aws.SES({ apiVersion: '2010-12-01' });
 
 exports.handler = function(event, context, callback) {
   // https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-notifications-contents.html#receiving-email-notifications-contents-mail-object

@@ -9,12 +9,13 @@ resource "aws_lambda_permission" "allow_ses" {
 }
 
 resource "aws_iam_policy" "lambda-logs" {
-  name        = "lambda-logs-policy"
-  path        = "/"
-  description = ""
+  name = "lambda-logs-policy"
+  path = "/"
 
   policy = <<EOF
 {
+    "Version": "2012-10-17",
+    "Statement": [{
    "Effect": "Allow",
    "Action": [
       "logs:CreateLogGroup",
@@ -22,20 +23,29 @@ resource "aws_iam_policy" "lambda-logs" {
       "logs:PutLogEvents"
    ],
    "Resource": "arn:aws:logs:*:*:*"
+}]
 }
 EOF
 }
 
 resource "aws_iam_policy" "lambda-ses-send" {
-  name        = "lambda-logs-policy"
+  name        = "lambda-ses-send"
   path        = "/"
   description = ""
 
   policy = <<EOF
 {
-   "Effect": "Allow",
-   "Action": "ses:SendRawEmail",
-   "Resource": "*"
+  "Version":"2012-10-17",
+  "Statement":[
+    {
+      "Effect":"Allow",
+      "Action":[
+        "ses:SendEmail",
+        "ses:SendRawEmail"
+      ],
+      "Resource":"*"
+    }
+  ]
 }
 EOF
 }
