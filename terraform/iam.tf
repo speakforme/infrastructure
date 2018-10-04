@@ -9,6 +9,6 @@ resource "aws_iam_role_policy_attachment" "lambda-logs" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name               = "kzonovGreeterRoleTF"
+  name               = "email-lambda"
   assume_role_policy = "${data.aws_iam_policy_document.lambda-assume-role.json}"
 }

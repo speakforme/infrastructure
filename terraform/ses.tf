@@ -14,6 +14,8 @@ resource "aws_ses_receipt_rule" "store-and-acknowledge" {
   rule_set_name = "${aws_ses_receipt_rule_set.default.rule_set_name}"
   enabled       = true
 
+  recipients = ["bcc@email.speakforme.in"]
+
   // We don't need no AV scans
   scan_enabled = false
 
@@ -23,9 +25,8 @@ resource "aws_ses_receipt_rule" "store-and-acknowledge" {
     position        = 1
   }
 
-  # s3_action {
-  #   bucket_name       = "speakforme-infrastructure"
-  #   object_key_prefix = "emails/"
-  #   position          = 1
-  # }
+  s3_action {
+    bucket_name = "speakforme-emails"
+    position    = 1
+  }
 }

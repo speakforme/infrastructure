@@ -4,6 +4,13 @@ provider "aws" {
   profile = "speakforme"
 }
 
+provider "aws" {
+  alias   = "mumbai"
+  region  = "ap-south-1"
+  version = "~> 1.37"
+  profile = "speakforme"
+}
+
 terraform {
   version = "~> 0.11.8"
 

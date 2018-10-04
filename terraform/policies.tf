@@ -41,7 +41,8 @@ resource "aws_iam_policy" "lambda-ses-send" {
       "Effect":"Allow",
       "Action":[
         "ses:SendEmail",
-        "ses:SendRawEmail"
+        "ses:SendRawEmail",
+        "ses:SendTemplatedEmail"
       ],
       "Resource":"*"
     }

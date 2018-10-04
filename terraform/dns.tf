@@ -110,7 +110,6 @@ resource "aws_route53_record" "www" {
 }
 
 // MX Records
-
 resource "aws_route53_record" "email-mx" {
   zone_id = "${aws_route53_zone.speakforme-in.id}"
   name    = "email"
@@ -118,8 +117,7 @@ resource "aws_route53_record" "email-mx" {
   ttl     = "60"
 
   records = [
-    "10 ${aws_eip.mailserver.public_ip}",
-    "10 mx.postal.speakforme.in.",
+    "10 inbound-smtp.eu-west-1.amazonaws.com.",
   ]
 }
 
@@ -142,16 +140,5 @@ resource "aws_route53_record" "speakforme-mx" {
 
   records = [
     "10 mx.postal.speakforme.in.",
-  ]
-}
-
-resource "aws_route53_record" "info-mx" {
-  zone_id = "${aws_route53_zone.speakforme-in.id}"
-  name    = "info"
-  type    = "MX"
-  ttl     = "1800"
-
-  records = [
-    "10 feedback-smtp.us-east-1.amazonses.com.",
   ]
 }
