@@ -26,12 +26,24 @@ and most importantly - allow everyone to contribute to the infrastructure.
     ├── keys.tf (Default AWS Keys)
     ├── provider.tf (AWS Config)
     ├── s3.tf (S3 Bucket for storing terraform state)
-    ├── security_groups.tf
+    └── security_groups.tf
 ```
 
-## TODO
+## How does it work?
 
--   [ ] Setup campaign app on the server
--   [ ] Grant other people access
--   [ ] Add pass provider to hold secrets
--   [ ] Add netlify-provider
+We run entirely off Terraform, AWS (SES+Lambda+DynamoDB).
+
+The website part of it is at [speakforme/website](https://github.com/speakforme/website).
+We mark ourselves in the bcc (`bcc@email.speakforme.in`). This is caught by SES, which triggers
+a Lambda job.
+
+The Lambda job:
+
+-   [ ] Generates a UUID.
+-   [ ] Saves the from email in dynamoDB against the UUID.
+-   [ ] Sends an acknowledgement email with a unsubscription link that has the UUID.
+-   [ ] Acknowledgement email is templated using SES Templates.
+
+The unsubscription link triggers another Lambda job which:
+
+-   [ ] Deletes the email entry from the DynamoDB using the UUID.

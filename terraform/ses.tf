@@ -1,8 +1,6 @@
 resource "aws_ses_template" "acknowledge" {
-  name    = "Acknowledgement"
-  subject = "Thanks for speaking up!"
-  html    = "${file("${path.module}/files/ack.html")}"
-  text    = "${file("${path.module}/files/ack.txt")}"
+  name = "Acknowledgement"
+  text = "${file("${path.module}/files/ack.txt")}"
 }
 
 resource "aws_ses_receipt_rule_set" "default" {
@@ -14,6 +12,7 @@ resource "aws_ses_receipt_rule" "store-and-acknowledge" {
   rule_set_name = "${aws_ses_receipt_rule_set.default.rule_set_name}"
   enabled       = true
 
+  // Emails must be bcc'd to this email address
   recipients = ["bcc@email.speakforme.in"]
 
   // We don't need no AV scans
