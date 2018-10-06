@@ -1,11 +1,4 @@
-resource "aws_lambda_permission" "allow_ses" {
-  statement_id   = "GiveSESPermissionToInvokeFunction"
-  action         = "lambda:InvokeFunction"
-  function_name  = "${aws_lambda_function.store-and-ack.function_name}"
-  principal      = "ses.amazonaws.com"
-  source_account = "${local.speakforme_account_id}"
-}
-
+// IAM policy for the email receipt lambda job
 data "aws_iam_policy_document" "email-receipt-lambda" {
   statement {
     actions = [
@@ -42,4 +35,22 @@ resource "aws_iam_policy" "email-receipt-lambda" {
   name   = "email-receipt-lambda"
   path   = "/"
   policy = "${data.aws_iam_policy_document.email-receipt-lambda.json}"
+}
+
+// IAM policy for the unsubscribe lambda
+data "aws_iam_policy_document" "unsubscribe-lambda" {
+  statement {
+    actions = [
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+    ]
+
+    resources = ["${aws_dynamodb_table.email-counters.arn}"]
+  }
+}
+
+resource "aws_iam_policy" "unsubscribe-lambda" {
+  name   = "unsubscribe-lambda"
+  path   = "/"
+  policy = "${data.aws_iam_policy_document.unsubscribe-lambda.json}"
 }

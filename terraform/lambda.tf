@@ -1,7 +1,7 @@
 data "archive_file" "email-receipt-lambda" {
   type        = "zip"
-  source_dir  = "files/lambda/"
-  output_path = "lambda.zip"
+  source_dir  = "lambda/email-receipt/"
+  output_path = "email-receipt.zip"
 }
 
 resource "aws_lambda_function" "store-and-ack" {
@@ -11,4 +11,19 @@ resource "aws_lambda_function" "store-and-ack" {
   handler          = "lambda.handler"
   runtime          = "nodejs8.10"
   source_code_hash = "${base64sha256(file(data.archive_file.email-receipt-lambda.output_path))}"
+}
+
+data "archive_file" "unsubscribe-lambda" {
+  type        = "zip"
+  source_dir  = "lambda/unsubscribe/"
+  output_path = "unsubscribe.zip"
+}
+
+resource "aws_lambda_function" "unsubscribe" {
+  filename         = "${data.archive_file.unsubscribe-lambda.output_path}"
+  function_name    = "unsubscribe"
+  role             = "${aws_iam_role.unsubscribe-lambda.arn}"
+  handler          = "index.handler"
+  runtime          = "nodejs8.10"
+  source_code_hash = "${base64sha256(file(data.archive_file.unsubscribe-lambda.output_path))}"
 }
