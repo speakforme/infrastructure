@@ -1,14 +1,9 @@
-resource "aws_iam_role_policy_attachment" "lambda-ses-send" {
-  role       = "${aws_iam_role.lambda.name}"
-  policy_arn = "${aws_iam_policy.lambda-ses-send.arn}"
+resource "aws_iam_role_policy_attachment" "email-receipt-lambda" {
+  role       = "${aws_iam_role.email-receipt-lambda.name}"
+  policy_arn = "${aws_iam_policy.email-receipt-lambda.arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "lambda-logs" {
-  role       = "${aws_iam_role.lambda.name}"
-  policy_arn = "${aws_iam_policy.lambda-logs.arn}"
-}
-
-resource "aws_iam_role" "lambda" {
-  name               = "email-lambda"
+resource "aws_iam_role" "email-receipt-lambda" {
+  name               = "email-receipt-lambda"
   assume_role_policy = "${data.aws_iam_policy_document.lambda-assume-role.json}"
 }

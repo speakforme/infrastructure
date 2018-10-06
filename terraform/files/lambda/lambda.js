@@ -1,16 +1,14 @@
-var AWS = require('aws-sdk'),
-  qs = require('querystring');
+let AWS = require('aws-sdk'),
+  uuidv4 = require('uuid/v4');
 
 AWS.config.update({ region: 'eu-west-1' });
 
-exports.handler = function(event, context, callback) {
-  var fromEmail = 'info@speakforme.in';
-
-  // https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-notifications-contents.html#receiving-email-notifications-contents-mail-object
-  var userEmail =
-    event.Records[0].ses.mail.source || event.Records[0].ses.mail.from;
-
-  var subject = event.Records[0].ses.mail.commonHeaders.subject;
+let sendAcknowledgement = async function(
+  subject,
+  sourceEmail,
+  unsubscribeLink
+) {
+  let fromEmail = 'info@email.speakforme.in';
 
   if (!subject) {
     subject = 'Speak For Me Acknowledgement';
@@ -18,15 +16,13 @@ exports.handler = function(event, context, callback) {
     subject = 'Re: ' + subject;
   }
 
-  var unsubscribe_link =
-    'https://campaign.speakforme.in/unsubscribe?email=' + qs.escape(userEmail);
   // Create the promise and SES service object
-  var sendPromise = new AWS.SES({
+  await new AWS.SES({
     apiVersion: '2010-12-01',
-  }).sendEmail(
-    {
+  })
+    .sendEmail({
       Destination: {
-        ToAddresses: [userEmail],
+        ToAddresses: [sourceEmail],
       },
       Message: {
         Body: {
@@ -38,7 +34,7 @@ This is an acknowledgement that the Speak For Me campaign has received a copy of
 
 To protect your privacy, we will soon delete the email we received. However, we'd like to keep you updated on the campaign's progress and will send you regular email updates. If you prefer to not receive any email from us, please follow this link to unsubscribe:
 
-Unsubscribe: ${unsubscribe_link}
+Unsubscribe: ${unsubscribeLink}
 
 The campaign will publish statistics of the emails received, to encourage the media and policy makers to respond to public sentiment. You can follow the numbers from @bulletinbabu on Twitter.
 
@@ -62,14 +58,69 @@ For more information on the people behind this campaign, see https://www.speakfo
           Value: 'v2',
         },
       ],
-    },
-    function(err, data) {
-      if (!err) {
-        console.log('Email sent to ' + userEmail);
-      } else {
-        console.log(err);
-      }
-      console.log(data);
-    }
-  );
+    })
+    .promise();
 };
+
+// Write the from Email to DynamoDB
+let subscribeEmail = async function(sourceEmail) {
+  let dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' }),
+    uuid = uuidv4();
+
+  let params = {
+    Item: {
+      uuid: {
+        S: uuid,
+      },
+      email: {
+        S: sourceEmail,
+      },
+    },
+    ReturnValues: 'ALL_OLD',
+    TableName: 'email-subscriptions',
+  };
+
+  await dynamodb.putItem(params).promise();
+  return uuid;
+};
+
+// Extracts information from the email and then:
+// 1. Writes email to subscriptions table (so we can keep them updated)
+// 2. Sends back an acknowledgement
+// 3. TODO: Bumps counters for every email in the To: field
+exports.handler = async function(event, context, callback) {
+  // https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-notifications-contents.html#receiving-email-notifications-contents-mail-object
+  let sourceEmail =
+      event.Records[0].ses.mail.source || event.Records[0].ses.mail.from,
+    subject = event.Records[0].ses.mail.commonHeaders.subject;
+
+  let uuid = await subscribeEmail(sourceEmail);
+  let unsubscribeLink =
+    'https://campaign.speakforme.in/unsubscribe?uuid=' + uuid;
+
+  await sendAcknowledgement(subject, sourceEmail, unsubscribeLink);
+  console.log('Sent acknowledgement email to ' + sourceEmail);
+
+  // TODO: Bump the counters
+};
+
+exports.test = function() {
+  let event = {
+    Records: [
+      {
+        ses: {
+          mail: {
+            source: 'capt.n3m0@gmail.com',
+            from: 'capt.n3m0@gmail.com',
+            commonHeaders: {
+              subject: 'Email Subject',
+            },
+          },
+        },
+      },
+    ],
+  };
+  exports.handler(event);
+};
+
+exports.test();

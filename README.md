@@ -39,10 +39,10 @@ a Lambda job.
 
 The Lambda job:
 
--   [ ] Generates a UUID.
--   [ ] Saves the from email in dynamoDB against the UUID.
--   [ ] Sends an acknowledgement email with a unsubscription link that has the UUID.
--   [ ] Acknowledgement email is templated using SES Templates.
+-   [x] Generates a UUID.
+-   [x] Saves the from email in dynamoDB against the UUID.
+-   [x] Sends an acknowledgement email with a unsubscription link that has the UUID.
+-   [ ] Bumps counters in another table for every email marked on the email
 
 The unsubscription link triggers another Lambda job which:
 

@@ -1,5 +1,3 @@
-// TODO: Convert these 2 to proper terraform
-
 resource "aws_lambda_permission" "allow_ses" {
   statement_id   = "GiveSESPermissionToInvokeFunction"
   action         = "lambda:InvokeFunction"
@@ -8,45 +6,40 @@ resource "aws_lambda_permission" "allow_ses" {
   source_account = "${local.speakforme_account_id}"
 }
 
-resource "aws_iam_policy" "lambda-logs" {
-  name = "lambda-logs-policy"
-  path = "/"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [{
-   "Effect": "Allow",
-   "Action": [
+data "aws_iam_policy_document" "email-receipt-lambda" {
+  statement {
+    actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
-   ],
-   "Resource": "arn:aws:logs:*:*:*"
-}]
-}
-EOF
+      "logs:PutLogEvents",
+    ]
+
+    resources = [
+      "arn:aws:logs:*:*:*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "ses:SendEmail",
+      "ses:SendRawEmail",
+      "ses:SendTemplatedEmail",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "dynamodb:PutItem",
+    ]
+
+    resources = ["${aws_dynamodb_table.email-subscriptions.arn}"]
+  }
 }
 
-resource "aws_iam_policy" "lambda-ses-send" {
-  name        = "lambda-ses-send"
-  path        = "/"
-  description = ""
-
-  policy = <<EOF
-{
-  "Version":"2012-10-17",
-  "Statement":[
-    {
-      "Effect":"Allow",
-      "Action":[
-        "ses:SendEmail",
-        "ses:SendRawEmail",
-        "ses:SendTemplatedEmail"
-      ],
-      "Resource":"*"
-    }
-  ]
-}
-EOF
+resource "aws_iam_policy" "email-receipt-lambda" {
+  name   = "email-receipt-lambda"
+  path   = "/"
+  policy = "${data.aws_iam_policy_document.email-receipt-lambda.json}"
 }
