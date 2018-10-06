@@ -1,7 +1,11 @@
-let AWS = require('aws-sdk'),
-  uuidv4 = require('uuid/v4');
+const AWS = require('aws-sdk'),
+  uuidv4 = require('uuid/v4'),
+  atomicCounter = require('dynamodb-atomic-counter'),
+  region = 'eu-west-1',
+  _ = require('underscore.deferred');
 
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: region });
+atomicCounter.config.update({ region: region });
 
 let sendAcknowledgement = async function(
   subject,
@@ -84,6 +88,20 @@ let subscribeEmail = async function(sourceEmail) {
   return uuid;
 };
 
+let bumpCounters = function(emails, cb) {
+  let promises = [];
+  for (let i in emails) {
+    promises.push(
+      atomicCounter.increment(emails[i], {
+        tableName: 'email-counters',
+        keyAttribute: 'email',
+      })
+    );
+  }
+
+  _.when(promises).done(cb);
+};
+
 // Extracts information from the email and then:
 // 1. Writes email to subscriptions table (so we can keep them updated)
 // 2. Sends back an acknowledgement
@@ -101,26 +119,15 @@ exports.handler = async function(event, context, callback) {
   await sendAcknowledgement(subject, sourceEmail, unsubscribeLink);
   console.log('Sent acknowledgement email to ' + sourceEmail);
 
-  // TODO: Bump the counters
-};
+  // Gets all unique emails in the commonHeaders.{to,cc,bcc} fields
+  let destinationEmails = event.Records[0].ses.mail.commonHeaders.to
+    .concat(event.Records[0].ses.mail.commonHeaders.cc)
+    .concat(event.Records[0].ses.mail.commonHeaders.bcc);
+  destinationEmails = destinationEmails.filter(function(elem, pos) {
+    return destinationEmails.indexOf(elem) == pos;
+  });
 
-exports.test = function() {
-  let event = {
-    Records: [
-      {
-        ses: {
-          mail: {
-            source: 'capt.n3m0@gmail.com',
-            from: 'capt.n3m0@gmail.com',
-            commonHeaders: {
-              subject: 'Email Subject',
-            },
-          },
-        },
-      },
-    ],
-  };
-  exports.handler(event);
+  bumpCounters(destinationEmails, function(data) {
+    console.log('Counters Bumped for ' + destinationEmails.join());
+  });
 };
-
-exports.test();
