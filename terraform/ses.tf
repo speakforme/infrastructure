@@ -1,8 +1,3 @@
-resource "aws_ses_template" "acknowledge" {
-  name = "Acknowledgement"
-  text = "${file("${path.module}/files/ack.txt")}"
-}
-
 resource "aws_ses_receipt_rule_set" "default" {
   rule_set_name = "default"
 }
@@ -34,4 +29,8 @@ resource "aws_ses_receipt_rule" "store-and-acknowledge" {
     invocation_type = "Event"
     position        = 2
   }
+}
+
+resource "aws_ses_configuration_set" "default" {
+  name = "default"
 }
