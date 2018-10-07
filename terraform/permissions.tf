@@ -11,7 +11,7 @@ resource "aws_lambda_permission" "allow_ses" {
 resource "aws_lambda_permission" "allow_apigw_unsubscribe" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.unsubscribe.arn}"
+  function_name = "${aws_lambda_function.unsubscribe.function_name}"
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html

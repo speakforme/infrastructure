@@ -29,6 +29,16 @@ data "aws_iam_policy_document" "email-receipt-lambda" {
 
     resources = ["${aws_dynamodb_table.email-subscriptions.arn}"]
   }
+
+  statement {
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+    ]
+
+    resources = ["${aws_dynamodb_table.email-counters.arn}"]
+  }
 }
 
 resource "aws_iam_policy" "email-receipt-lambda" {
@@ -45,7 +55,7 @@ data "aws_iam_policy_document" "unsubscribe-lambda" {
       "dynamodb:UpdateItem",
     ]
 
-    resources = ["${aws_dynamodb_table.email-counters.arn}"]
+    resources = ["${aws_dynamodb_table.email-subscriptions.arn}"]
   }
 }
 

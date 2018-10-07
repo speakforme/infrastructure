@@ -7,7 +7,7 @@ resource "aws_api_gateway_rest_api" "default" {
 resource "aws_api_gateway_resource" "unsubscribe" {
   rest_api_id = "${aws_api_gateway_rest_api.default.id}"
   parent_id   = "${aws_api_gateway_rest_api.default.root_resource_id}"
-  path_part   = "/unsubscribe"
+  path_part   = "unsubscribe"
 }
 
 resource "aws_api_gateway_method" "unsubscribe" {

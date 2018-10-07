@@ -99,7 +99,11 @@ let bumpCounters = function(emails, cb) {
     );
   }
 
-  _.when(promises).done(cb);
+  _.when(promises)
+    .done(cb)
+    .fail(function(err) {
+      console.log(err);
+    });
 };
 
 // Extracts information from the email and then:
@@ -126,6 +130,8 @@ exports.handler = async function(event, context, callback) {
   destinationEmails = destinationEmails.filter(function(elem, pos) {
     return destinationEmails.indexOf(elem) == pos;
   });
+
+  console.log('Unique Emails: ' + destinationEmails.join());
 
   bumpCounters(destinationEmails, function(data) {
     console.log('Counters Bumped for ' + destinationEmails.join());
