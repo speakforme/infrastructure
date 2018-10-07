@@ -12,7 +12,7 @@ resource "aws_iam_role" "email-receipt-lambda" {
 // When a person clicks on Unsubscribe
 resource "aws_iam_role" "unsubscribe-lambda" {
   name               = "unsubscribe-lambda-lambda"
-  assume_role_policy = "${data.aws_iam_policy_document.lambda-assume-role.json}"
+  assume_role_policy = "${data.aws_iam_policy_document.apigw-assume-role.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "unsubscribe-lambda" {

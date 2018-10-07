@@ -92,9 +92,12 @@ let bumpCounters = function(emails, cb) {
   let promises = [];
   for (let i in emails) {
     promises.push(
+      // See https://github.com/serg-io/dynamodb-atomic-counter/#increment-counterid-options-
+      // for docs
       atomicCounter.increment(emails[i], {
         tableName: 'email-counters',
         keyAttribute: 'email',
+        countAttribute: 'count',
       })
     );
   }

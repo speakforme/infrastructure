@@ -5,11 +5,17 @@ resource "aws_dynamodb_table" "email-counters" {
   read_capacity  = 5
   write_capacity = 1
 
-  hash_key = "email"
+  hash_key  = "email"
+  range_key = "count"
 
   attribute {
     name = "email"
     type = "S"
+  }
+
+  attribute {
+    name = "count"
+    type = "N"
   }
 
   tags {
