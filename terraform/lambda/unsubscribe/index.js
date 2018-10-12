@@ -11,13 +11,13 @@ let unsubscribe = function(uuid) {
                     S: uuid,
                 },
             },
-            TableName: 'email-subscription',
+            TableName: 'email-subscriptions',
         };
     return dynamodb.deleteItem(params).promise();
 };
 
 exports.handler = function(event, context, callback) {
-    let uuid = event.queryStringParameters.uuid,
+    let uuid = false,
         res = {
             statusCode: 200,
             headers: {
@@ -26,6 +26,10 @@ exports.handler = function(event, context, callback) {
             body: 'Invalid Link',
         };
 
+    if ('uuid' in event.queryStringParameters) {
+        uuid = event.queryStringParameters['uuid'];
+    }
+
     if (uuid) {
         // We remove it from the email-subscription table
         unsubscribe(uuid)
@@ -33,11 +37,13 @@ exports.handler = function(event, context, callback) {
                 res.body = 'Unsubscribed';
                 callback(null, res);
             })
-            .fail(function(err) {
-                res.body = err;
+            .catch(function(err) {
+                res.body = err.message;
                 callback(null, res);
             });
     } else {
         callback(null, res);
     }
 };
+
+exports.unsubscribe = unsubscribe;

@@ -57,6 +57,18 @@ data "aws_iam_policy_document" "unsubscribe-lambda" {
 
     resources = ["${aws_dynamodb_table.email-subscriptions.arn}"]
   }
+
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = [
+      "arn:aws:logs:*:*:*",
+    ]
+  }
 }
 
 resource "aws_iam_policy" "unsubscribe-lambda" {

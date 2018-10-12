@@ -15,13 +15,17 @@ data "aws_iam_policy_document" "lambda-assume-role" {
   }
 }
 
-data "aws_iam_policy_document" "apigw-assume-role" {
+data "aws_iam_policy_document" "lambda_apigw_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
-      identifiers = ["apigateway.amazonaws.com"]
+      type = "Service"
+
+      identifiers = [
+        "apigateway.amazonaws.com",
+        "lambda.amazonaws.com",
+      ]
     }
   }
 }
