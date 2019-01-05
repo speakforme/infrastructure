@@ -21,6 +21,10 @@ let sendAcknowledgement = async function(
     subject = 'Re: ' + subject;
   }
 
+  if (process.env['AWS_MOCK']) {
+    return;
+  }
+
   // Create the promise and SES service object
   await new AWS.SES({
     apiVersion: '2010-12-01',
@@ -69,8 +73,7 @@ For more information on the people behind this campaign, see https://www.speakfo
 
 // Write the from Email to DynamoDB
 let subscribeEmail = async function(sourceEmail) {
-  let dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' }),
-    uuid = uuidv4();
+  let uuid = uuidv4();
 
   let params = {
     Item: {
@@ -85,8 +88,34 @@ let subscribeEmail = async function(sourceEmail) {
     TableName: 'email-subscriptions',
   };
 
-  await dynamodb.putItem(params).promise();
+  if (!process.env['AWS_MOCK']) {
+    let dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+    await dynamodb.putItem(params).promise();
+  }
+
   return uuid;
+};
+
+// Since SES does not send us the details in the commonHeaders
+// for BCC addresses, we extract it from the RECEIEVED header instead
+let getBccEmailFromReceivedHeader = function(sesMail) {
+  const BCC_EMAIL_REGEX = /bcc(\+\w)?@email\.speakforme\.in/g;
+  receivedHeader = sesMail.headers
+    .filter(function(e) {
+      return e['name'] == 'Received';
+    })
+    .map(function(e) {
+      return e['value'];
+    });
+
+  while ((m = BCC_EMAIL_REGEX.exec(receivedHeader)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (m.index === BCC_EMAIL_REGEX.lastIndex) {
+      BCC_EMAIL_REGEX.lastIndex++;
+    }
+    return m[0];
+  }
+  return 'bcc@email.speakforme.in';
 };
 
 let bumpCounters = function(emails, cb) {
@@ -106,7 +135,6 @@ let bumpCounters = function(emails, cb) {
   _.when(promises)
     .done(cb)
     .fail(function(err) {
-      console.log('FAILED');
       console.log(err);
     });
 };
@@ -131,20 +159,32 @@ exports.handler = async function(event, context, callback) {
   // Gets all unique emails in the commonHeaders.{to,cc,bcc} fields
   let destinationEmails = event.Records[0].ses.mail.commonHeaders.to
     .concat(event.Records[0].ses.mail.commonHeaders.cc)
-    .concat(event.Records[0].ses.mail.commonHeaders.bcc);
-  let d2 = destinationEmails
-    .map(function(header) {
-      let addresses = mimelib.parseAddresses(addresses);
-      console.log('Address Size = ' + addresses.length);
-      return addresses[0].address;
-    })
-    .filter(function(elem, pos) {
-      return destinationEmails.indexOf(elem) == pos && elem;
+    // bcc does not work properly: https://stackoverflow.com/q/45050168
+    // So we hack around it (see getBccEmailFromReceivedHeader)
+    .concat(event.Records[0].ses.mail.commonHeaders.bcc)
+    // This is the speakforme email to which we were bcc'd
+    .concat([getBccEmailFromReceivedHeader(event.Records[0].ses.mail)])
+    .filter(Boolean);
+
+  destinationEmails = Array.from(
+    new Set(
+      destinationEmails.map(function(header) {
+        let addresses = mimelib.parseAddresses(header);
+        return addresses.length > 0 ? addresses[0].address : null;
+      })
+    )
+  );
+
+  console.log('Unique Emails: ' + destinationEmails.length);
+
+  if (!process.env['AWS_MOCK']) {
+    bumpCounters(destinationEmails, function(data) {
+      console.log(data);
+      console.log('Counters Bumped for ' + destinationEmails.join());
     });
 
-  console.log('Unique Emails: ' + d2.join() + ' SIZE = ' + d2.length);
-
-  bumpCounters(destinationEmails, function(data) {
-    console.log('Counters Bumped for ' + destinationEmails.join());
-  });
+    bumpCounters(['total'], function(data) {
+      console.log(data);
+    });
+  }
 };
