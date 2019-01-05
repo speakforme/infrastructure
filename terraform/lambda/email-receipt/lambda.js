@@ -180,16 +180,13 @@ exports.handler = async function(event, context, callback) {
     )
   );
 
-  console.log('Unique Emails: ' + destinationEmails.length);
-
   if (!process.env['AWS_MOCK']) {
     bumpCounters(destinationEmails, function(data) {
-      console.log(data);
       console.log('Counters Bumped for ' + destinationEmails.join());
     });
 
     bumpCounters(['total'], function(data) {
-      console.log(data);
+      console.log('Bumped total Counter');
     });
   }
 };
