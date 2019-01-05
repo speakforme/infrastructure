@@ -5,6 +5,13 @@ const AWS = require('aws-sdk'),
   _ = require('underscore.deferred'),
   mimelib = require('mimelib');
 
+const ACKNOWLEDGEMENT_FROM_EMAIL = 'info@email.speakforme.in',
+  ACKNOWLEDGEMENT_SUBJECT = 'Speak For Me Acknowledgement',
+  BCC_EMAIL_REGEX = /bcc(\+\w)?@email\.speakforme\.in/g,
+  ACKNOWLEDGEMENT_REPLY_TO_EMAIL = 'info@speakforme.in',
+  UNSUBSCRIBE_LINK_PREFIX = 'https://campaign.speakforme.in/unsubscribe?uuid=',
+  DEFAULT_BCC_CAMPAIGN_EMAIL = 'bcc@email.speakforme.in';
+
 AWS.config.update({ region: region });
 atomicCounter.config.update({ region: region });
 
@@ -13,10 +20,10 @@ let sendAcknowledgement = async function(
   sourceEmail,
   unsubscribeLink
 ) {
-  let fromEmail = 'info@email.speakforme.in';
+  let fromEmail = ACKNOWLEDGEMENT_FROM_EMAIL;
 
   if (!subject) {
-    subject = 'Speak For Me Acknowledgement';
+    subject = ACKNOWLEDGEMENT_SUBJECT;
   } else {
     subject = 'Re: ' + subject;
   }
@@ -55,8 +62,8 @@ For more information on the people behind this campaign, see https://www.speakfo
           Data: subject,
         },
       },
-      ReplyToAddresses: ['info@speakforme.in'],
-      Source: fromEmail,
+      ReplyToAddresses: [ACKNOWLEDGEMENT_REPLY_TO_EMAIL],
+      Source: ACKNOWLEDGEMENT_FROM_EMAIL,
       Tags: [
         {
           Name: 'Type',
@@ -99,7 +106,6 @@ let subscribeEmail = async function(sourceEmail) {
 // Since SES does not send us the details in the commonHeaders
 // for BCC addresses, we extract it from the RECEIEVED header instead
 let getBccEmailFromReceivedHeader = function(sesMail) {
-  const BCC_EMAIL_REGEX = /bcc(\+\w)?@email\.speakforme\.in/g;
   receivedHeader = sesMail.headers
     .filter(function(e) {
       return e['name'] == 'Received';
@@ -115,7 +121,7 @@ let getBccEmailFromReceivedHeader = function(sesMail) {
     }
     return m[0];
   }
-  return 'bcc@email.speakforme.in';
+  return DEFAULT_BCC_CAMPAIGN_EMAIL;
 };
 
 let bumpCounters = function(emails, cb) {
@@ -150,8 +156,7 @@ exports.handler = async function(event, context, callback) {
     subject = event.Records[0].ses.mail.commonHeaders.subject;
 
   let uuid = await subscribeEmail(sourceEmail);
-  let unsubscribeLink =
-    'https://campaign.speakforme.in/unsubscribe?uuid=' + uuid;
+  let unsubscribeLink = UNSUBSCRIBE_LINK_PREFIX + uuid;
 
   await sendAcknowledgement(subject, sourceEmail, unsubscribeLink);
   console.log('Sent acknowledgement email to ' + sourceEmail);
