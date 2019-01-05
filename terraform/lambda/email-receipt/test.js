@@ -11,7 +11,7 @@ let event = {
             subject: 'Email Subject',
             to: ['a@google.com', 'b@google.com'],
             cc: ['c@google.com'],
-            bcc: ['info@email.speakforme.in', 'c@google.com', 'a@google.com'],
+            bcc: ['info@email.speakforme.in', 'test@example.com'],
           },
         },
       },

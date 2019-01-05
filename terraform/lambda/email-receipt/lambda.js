@@ -105,6 +105,7 @@ let bumpCounters = function(emails, cb) {
   _.when(promises)
     .done(cb)
     .fail(function(err) {
+      console.log('FAILED');
       console.log(err);
     });
 };

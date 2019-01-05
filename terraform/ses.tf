@@ -9,9 +9,10 @@ resource "aws_ses_receipt_rule" "store-and-acknowledge" {
 
   // Emails must be bcc'd to this email address
   recipients = [
+    // This supports bcc+(campaign-target-code) as well
     "bcc@email.speakforme.in",
 
-    // This is just so that we can verify this in SES as a sending email
+    // This is just so that we can verify this in SES as a sending email address
     "info@email.speakforme.in",
   ]
 
