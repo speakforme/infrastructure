@@ -175,7 +175,8 @@ exports.handler = async function(event, context, callback) {
       event.Records[0].ses.mail.source || event.Records[0].ses.mail.from,
     subject = event.Records[0].ses.mail.commonHeaders.subject;
 
-  if (!searchEmail(sourceEmail)) {
+  // Only subscribe the user if this is the first time this email has been noticed
+  if (!(await searchEmail(sourceEmail))) {
     let uuid = await subscribeEmail(sourceEmail);
     let unsubscribeLink = UNSUBSCRIBE_LINK_PREFIX + uuid;
 

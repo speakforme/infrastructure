@@ -31,6 +31,11 @@ data "aws_iam_policy_document" "email-receipt-lambda" {
   }
 
   statement {
+    actions   = ["dynamodb:Query"]
+    resources = ["${aws_dynamodb_table.email-subscriptions.arn}/index/EmailIndex"]
+  }
+
+  statement {
     actions = [
       "dynamodb:GetItem",
       "dynamodb:PutItem",
@@ -53,6 +58,7 @@ data "aws_iam_policy_document" "unsubscribe-lambda" {
     actions = [
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
     ]
 
     resources = ["${aws_dynamodb_table.email-subscriptions.arn}"]
