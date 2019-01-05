@@ -1,5 +1,4 @@
 const lambda = require('./lambda');
-const parser = require('address-rfc2822');
 
 const receivedHeader =
 	'from out.migadu.com (out.migadu.com [91.121.223.63]) by inbound-smtp.eu-west-1.amazonaws.com with SMTP id 9prtp795j7bp2k95q3t0ftbur4s6pv416eegqco1 for bcc+j@email.speakforme.in; Sat, 05 Jan 2019 20:31:29 +0000 (UTC)';
