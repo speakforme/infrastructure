@@ -2,7 +2,8 @@ const AWS = require('aws-sdk'),
   uuidv4 = require('uuid/v4'),
   atomicCounter = require('dynamodb-atomic-counter'),
   region = 'eu-west-1',
-  _ = require('underscore.deferred');
+  _ = require('underscore.deferred'),
+  mimelib = require('mimelib');
 
 AWS.config.update({ region: region });
 atomicCounter.config.update({ region: region });
@@ -131,11 +132,17 @@ exports.handler = async function(event, context, callback) {
   let destinationEmails = event.Records[0].ses.mail.commonHeaders.to
     .concat(event.Records[0].ses.mail.commonHeaders.cc)
     .concat(event.Records[0].ses.mail.commonHeaders.bcc);
-  destinationEmails = destinationEmails.filter(function(elem, pos) {
-    return destinationEmails.indexOf(elem) == pos;
-  });
+  let d2 = destinationEmails
+    .map(function(header) {
+      let addresses = mimelib.parseAddresses(addresses);
+      console.log('Address Size = ' + addresses.length);
+      return addresses[0].address;
+    })
+    .filter(function(elem, pos) {
+      return destinationEmails.indexOf(elem) == pos && elem;
+    });
 
-  console.log('Unique Emails: ' + destinationEmails.join());
+  console.log('Unique Emails: ' + d2.join() + ' SIZE = ' + d2.length);
 
   bumpCounters(destinationEmails, function(data) {
     console.log('Counters Bumped for ' + destinationEmails.join());
