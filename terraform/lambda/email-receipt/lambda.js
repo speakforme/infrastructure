@@ -7,7 +7,7 @@ const AWS = require('aws-sdk'),
 
 const ACKNOWLEDGEMENT_FROM_EMAIL = 'info@email.speakforme.in',
   ACKNOWLEDGEMENT_SUBJECT = 'Speak For Me Acknowledgement',
-  BCC_EMAIL_REGEX = /bcc(\+\w)?@email\.speakforme\.in/g,
+  BCC_EMAIL_REGEX = /bcc(\+?[^@]+)@email\.speakforme\.in/g,
   ACKNOWLEDGEMENT_REPLY_TO_EMAIL = 'info@speakforme.in',
   UNSUBSCRIBE_LINK_PREFIX = 'https://campaign.speakforme.in/unsubscribe?uuid=',
   DEFAULT_BCC_CAMPAIGN_EMAIL = 'bcc@email.speakforme.in';
