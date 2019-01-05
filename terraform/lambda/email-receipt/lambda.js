@@ -124,25 +124,17 @@ let getBccEmailFromReceivedHeader = function(sesMail) {
   return DEFAULT_BCC_CAMPAIGN_EMAIL;
 };
 
-let bumpCounters = function(emails, cb) {
+let bumpCounters = async function(emails) {
   let promises = [];
   for (let i in emails) {
-    promises.push(
-      // See https://github.com/serg-io/dynamodb-atomic-counter/#increment-counterid-options-
-      // for docs
-      atomicCounter.increment(emails[i], {
-        tableName: 'email-counters',
-        keyAttribute: 'email',
-        countAttribute: 'count',
-      })
-    );
-  }
-
-  _.when(promises)
-    .done(cb)
-    .fail(function(err) {
-      console.log(err);
+    // See https://github.com/serg-io/dynamodb-atomic-counter/#increment-counterid-options-
+    // for docs
+    await atomicCounter.increment(emails[i], {
+      tableName: 'email-counters',
+      keyAttribute: 'email',
+      countAttribute: 'count',
     });
+  }
 };
 
 // Extracts information from the email and then:
@@ -162,14 +154,13 @@ exports.handler = async function(event, context, callback) {
   console.log('Sent acknowledgement email to ' + sourceEmail);
 
   // Gets all unique emails in the commonHeaders.{to,cc,bcc} fields
-  let destinationEmails = event.Records[0].ses.mail.commonHeaders.to
-    .concat(event.Records[0].ses.mail.commonHeaders.cc)
+  let destinationEmails = (event.Records[0].ses.mail.commonHeaders.to || [])
+    .concat(event.Records[0].ses.mail.commonHeaders.cc || [])
     // bcc does not work properly: https://stackoverflow.com/q/45050168
     // So we hack around it (see getBccEmailFromReceivedHeader)
-    .concat(event.Records[0].ses.mail.commonHeaders.bcc)
+    .concat(event.Records[0].ses.mail.commonHeaders.bcc || [])
     // This is the speakforme email to which we were bcc'd
-    .concat([getBccEmailFromReceivedHeader(event.Records[0].ses.mail)])
-    .filter(Boolean);
+    .concat([getBccEmailFromReceivedHeader(event.Records[0].ses.mail)]);
 
   destinationEmails = Array.from(
     new Set(
@@ -178,15 +169,13 @@ exports.handler = async function(event, context, callback) {
         return addresses.length > 0 ? addresses[0].address : null;
       })
     )
-  );
+  ).filter(Boolean);
+
+  console.log(destinationEmails);
 
   if (!process.env['AWS_MOCK']) {
-    bumpCounters(destinationEmails, function(data) {
-      console.log('Counters Bumped for ' + destinationEmails.join());
-    });
-
-    bumpCounters(['total'], function(data) {
-      console.log('Bumped total Counter');
-    });
+    console.log('Bumping Counters');
+    await bumpCounters(destinationEmails.concat(['total']));
+    console.log('Counters bumped');
   }
 };
