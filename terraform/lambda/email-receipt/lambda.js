@@ -78,6 +78,34 @@ For more information on the people behind this campaign, see https://www.speakfo
     .promise();
 };
 
+let searchEmail = async function(email) {
+  // aws --region eu-west-1 dynamodb query --table-name email-subscriptions
+  // --index-name EmailIndex  --key-conditions
+  // '{"email": {"ComparisonOperator":"EQ", "AttributeValueList":[{"S":"email"}]}}'
+  let params = {
+    TableName: 'email-subscriptions',
+    IndexName: 'EmailIndex',
+    Limit: 1,
+    KeyConditions: {
+      email: {
+        ComparisonOperator: 'EQ',
+        AttributeValueList: [
+          {
+            S: email,
+          },
+        ],
+      },
+    },
+  };
+
+  if (process.env['AWS_MOCK']) {
+    return false;
+  }
+  let dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+  let results = await dynamodb.query(params).promise();
+  return results['Items'].length > 0;
+};
+
 // Write the from Email to DynamoDB
 let subscribeEmail = async function(sourceEmail) {
   let uuid = uuidv4();
@@ -147,11 +175,13 @@ exports.handler = async function(event, context, callback) {
       event.Records[0].ses.mail.source || event.Records[0].ses.mail.from,
     subject = event.Records[0].ses.mail.commonHeaders.subject;
 
-  let uuid = await subscribeEmail(sourceEmail);
-  let unsubscribeLink = UNSUBSCRIBE_LINK_PREFIX + uuid;
+  if (!searchEmail(sourceEmail)) {
+    let uuid = await subscribeEmail(sourceEmail);
+    let unsubscribeLink = UNSUBSCRIBE_LINK_PREFIX + uuid;
 
-  await sendAcknowledgement(subject, sourceEmail, unsubscribeLink);
-  console.log('Sent acknowledgement email to ' + sourceEmail);
+    await sendAcknowledgement(subject, sourceEmail, unsubscribeLink);
+    console.log('Sent acknowledgement email to ' + sourceEmail);
+  }
 
   // Gets all unique emails in the commonHeaders.{to,cc,bcc} fields
   let destinationEmails = (event.Records[0].ses.mail.commonHeaders.to || [])

@@ -35,6 +35,19 @@ resource "aws_dynamodb_table" "email-subscriptions" {
     type = "S"
   }
 
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "EmailIndex"
+    hash_key        = "email"
+    write_capacity  = 10
+    read_capacity   = 10
+    projection_type = "KEYS_ONLY"
+  }
+
   tags {
     Name      = "email-subscriptions"
     terraform = "true"
