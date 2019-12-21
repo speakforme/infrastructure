@@ -12,7 +12,7 @@ resource "aws_dynamodb_table" "email-counters" {
     type = "S"
   }
 
-  tags {
+  tags = {
     Name      = "email-counters"
     terraform = "true"
   }
@@ -48,7 +48,7 @@ resource "aws_dynamodb_table" "email-subscriptions" {
     projection_type = "KEYS_ONLY"
   }
 
-  tags {
+  tags = {
     Name      = "email-subscriptions"
     terraform = "true"
   }
