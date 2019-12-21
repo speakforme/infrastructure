@@ -1,18 +1,18 @@
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 1.37"
+  version = "~> 2.43.0"
   profile = "speakforme"
 }
 
 provider "aws" {
   alias   = "mumbai"
   region  = "ap-south-1"
-  version = "~> 1.37"
+  version = "~> 2.43.0"
   profile = "speakforme"
 }
 
 terraform {
-  version = "~> 0.11.8"
+  required_version = "~> v0.12.12"
 
   backend "s3" {
     bucket  = "speakforme-infrastructure"
