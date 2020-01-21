@@ -1,13 +1,13 @@
 // This bucket is in ap-south-1
 resource "aws_s3_bucket" "infrastructure" {
-  bucket   = "speakforme-infrastructure"
+  bucket   = "${var.infrastructure-bucket}"
   provider = "aws.mumbai"
 
   acl = "private"
 
-  tags {
-    Name        = "speakforme-infrastructure"
-    environment = "production"
+  tags = {
+    Name        = "${var.infrastructure-bucket}"
+    environment = "${var.campaign-env}"
     terraform   = true
   }
 
@@ -26,7 +26,7 @@ resource "aws_s3_bucket" "infrastructure" {
 
 // This bucket is in eu-west-1
 resource "aws_s3_bucket" "emails" {
-  bucket = "speakforme-emails"
+  bucket = "${var.email-bucket}"
 
   acl = "private"
 
@@ -44,31 +44,9 @@ resource "aws_s3_bucket" "emails" {
     }
   }
 
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AllowSESPuts",
-            "Effect": "Allow",
-            "Principal": {
-                "Service": "ses.amazonaws.com"
-            },
-            "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::speakforme-emails/*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:Referer": "531324969672"
-                }
-            }
-        }
-    ]
-}
-EOF
-
-  tags {
-    Name        = "speakforme-emails"
-    environment = "production"
+  tags = {
+    Name        = "${var.email-bucket}"
+    environment = "${var.campaign-env}"
     terraform   = true
   }
 
@@ -83,4 +61,9 @@ EOF
   lifecycle {
     prevent_destroy = true
   }
+}
+
+resource "aws_s3_bucket_policy" "email-bucket" {
+  bucket = "${aws_s3_bucket.emails.id}"
+  policy = "${data.aws_iam_policy_document.email-bucket.json}"
 }
