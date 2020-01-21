@@ -2,3 +2,4 @@
 lambda/email-receipt/node_modules
 lambda/unsubscribe/node_modules
 .terraform/
+*.tfstate

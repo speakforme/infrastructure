@@ -1,9 +1,6 @@
 # infrastructure
 
-Infrastructure Components for Speakforme campaign. This includes:
-
-1.  AWS Configuration, managed via terraform
-2.  Ansible Configuration
+Infrastructure Components for Speakforme campaign. 
 
 Writing our Infrastructure as Code allows us to make easier changes, rollback if needed,
 and most importantly - allow everyone to contribute to the infrastructure.
@@ -11,22 +8,23 @@ and most importantly - allow everyone to contribute to the infrastructure.
 ## Directory Structure
 
 ```
-├── ansible (server configuration)
-│   ├── ansible.cfg
-│   ├── group_vars
-│   │   └── all
-│   │       └── vault.yml (SES Secrets)
-│   ├── inventory
-│   └── servers.yml (ansible playbook)
+infrastructure/
+├── api.tf
+├── data.tf (IAM Policies)
+├── dns.tf (DNS Records)
+├── dynamodb.tf (DynamoDB Tables)
+├── iam.tf (IAM policies and role attachment)
+├── lambda (Lambda code)
+│   ├── email-receipt
+│   └── unsubscribe
+├── lambda.tf (Create lambda on AWS)
+├── output.tf (Output variables)
+├── permissions.tf (AWS Lambda Permissions)
+├── policies.tf (IAM policy and documents)
+├── provider.tf (Terraform providers)
 ├── README.md
-└── terraform
-    ├── data.tf (AMI Configuration)
-    ├── dns.tf
-    ├── instance.tf (Instance Configuration)
-    ├── keys.tf (Default AWS Keys)
-    ├── provider.tf (AWS Config)
-    ├── s3.tf (S3 Bucket for storing terraform state)
-    └── security_groups.tf
+├── s3.tf (S3 Bucket)
+└── ses.tf (SES configuration)
 ```
 
 ## How does it work?
