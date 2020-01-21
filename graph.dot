@@ -1,0 +1,170 @@
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] aws_api_gateway_deployment.default" [label = "aws_api_gateway_deployment.default", shape = "box"]
+		"[root] aws_api_gateway_integration.unsubscribe-lambda" [label = "aws_api_gateway_integration.unsubscribe-lambda", shape = "box"]
+		"[root] aws_api_gateway_method.unsubscribe" [label = "aws_api_gateway_method.unsubscribe", shape = "box"]
+		"[root] aws_api_gateway_resource.unsubscribe" [label = "aws_api_gateway_resource.unsubscribe", shape = "box"]
+		"[root] aws_api_gateway_rest_api.default" [label = "aws_api_gateway_rest_api.default", shape = "box"]
+		"[root] aws_dynamodb_table.email-counters" [label = "aws_dynamodb_table.email-counters", shape = "box"]
+		"[root] aws_dynamodb_table.email-subscriptions" [label = "aws_dynamodb_table.email-subscriptions", shape = "box"]
+		"[root] aws_iam_policy.email-receipt-lambda" [label = "aws_iam_policy.email-receipt-lambda", shape = "box"]
+		"[root] aws_iam_policy.unsubscribe-lambda" [label = "aws_iam_policy.unsubscribe-lambda", shape = "box"]
+		"[root] aws_iam_role.email-receipt-lambda" [label = "aws_iam_role.email-receipt-lambda", shape = "box"]
+		"[root] aws_iam_role.unsubscribe-lambda" [label = "aws_iam_role.unsubscribe-lambda", shape = "box"]
+		"[root] aws_iam_role_policy_attachment.email-receipt-lambda" [label = "aws_iam_role_policy_attachment.email-receipt-lambda", shape = "box"]
+		"[root] aws_iam_role_policy_attachment.unsubscribe-lambda" [label = "aws_iam_role_policy_attachment.unsubscribe-lambda", shape = "box"]
+		"[root] aws_lambda_function.store-and-ack" [label = "aws_lambda_function.store-and-ack", shape = "box"]
+		"[root] aws_lambda_function.unsubscribe" [label = "aws_lambda_function.unsubscribe", shape = "box"]
+		"[root] aws_lambda_permission.allow_apigw_unsubscribe" [label = "aws_lambda_permission.allow_apigw_unsubscribe", shape = "box"]
+		"[root] aws_lambda_permission.allow_ses" [label = "aws_lambda_permission.allow_ses", shape = "box"]
+		"[root] aws_route53_record.beta-cname" [label = "aws_route53_record.beta-cname", shape = "box"]
+		"[root] aws_route53_record.campaign-a" [label = "aws_route53_record.campaign-a", shape = "box"]
+		"[root] aws_route53_record.email-mx" [label = "aws_route53_record.email-mx", shape = "box"]
+		"[root] aws_route53_record.netlify-cname" [label = "aws_route53_record.netlify-cname", shape = "box"]
+		"[root] aws_route53_record.postal-a" [label = "aws_route53_record.postal-a", shape = "box"]
+		"[root] aws_route53_record.postal-mx-a" [label = "aws_route53_record.postal-mx-a", shape = "box"]
+		"[root] aws_route53_record.postal-rp-a" [label = "aws_route53_record.postal-rp-a", shape = "box"]
+		"[root] aws_route53_record.postal-sf-a" [label = "aws_route53_record.postal-sf-a", shape = "box"]
+		"[root] aws_route53_record.psrp-cname" [label = "aws_route53_record.psrp-cname", shape = "box"]
+		"[root] aws_route53_record.psrp-email-cname" [label = "aws_route53_record.psrp-email-cname", shape = "box"]
+		"[root] aws_route53_record.routes-mx" [label = "aws_route53_record.routes-mx", shape = "box"]
+		"[root] aws_route53_record.speakforme-a" [label = "aws_route53_record.speakforme-a", shape = "box"]
+		"[root] aws_route53_record.speakforme-mx" [label = "aws_route53_record.speakforme-mx", shape = "box"]
+		"[root] aws_route53_record.storage-a" [label = "aws_route53_record.storage-a", shape = "box"]
+		"[root] aws_route53_record.www" [label = "aws_route53_record.www", shape = "box"]
+		"[root] aws_route53_zone.speakforme-in" [label = "aws_route53_zone.speakforme-in", shape = "box"]
+		"[root] aws_s3_bucket.emails" [label = "aws_s3_bucket.emails", shape = "box"]
+		"[root] aws_s3_bucket.infrastructure" [label = "aws_s3_bucket.infrastructure", shape = "box"]
+		"[root] aws_ses_configuration_set.default" [label = "aws_ses_configuration_set.default", shape = "box"]
+		"[root] aws_ses_receipt_rule.store-and-acknowledge" [label = "aws_ses_receipt_rule.store-and-acknowledge", shape = "box"]
+		"[root] aws_ses_receipt_rule_set.default" [label = "aws_ses_receipt_rule_set.default", shape = "box"]
+		"[root] data.archive_file.email-receipt-lambda" [label = "data.archive_file.email-receipt-lambda", shape = "box"]
+		"[root] data.archive_file.unsubscribe-lambda" [label = "data.archive_file.unsubscribe-lambda", shape = "box"]
+		"[root] data.aws_caller_identity.current" [label = "data.aws_caller_identity.current", shape = "box"]
+		"[root] data.aws_iam_policy_document.email-receipt-lambda" [label = "data.aws_iam_policy_document.email-receipt-lambda", shape = "box"]
+		"[root] data.aws_iam_policy_document.lambda-assume-role" [label = "data.aws_iam_policy_document.lambda-assume-role", shape = "box"]
+		"[root] data.aws_iam_policy_document.lambda_apigw_assume_role" [label = "data.aws_iam_policy_document.lambda_apigw_assume_role", shape = "box"]
+		"[root] data.aws_iam_policy_document.unsubscribe-lambda" [label = "data.aws_iam_policy_document.unsubscribe-lambda", shape = "box"]
+		"[root] provider.archive" [label = "provider.archive", shape = "diamond"]
+		"[root] provider.aws" [label = "provider.aws", shape = "diamond"]
+		"[root] provider.aws.mumbai" [label = "provider.aws.mumbai", shape = "diamond"]
+		"[root] aws_api_gateway_deployment.default" -> "[root] aws_api_gateway_integration.unsubscribe-lambda"
+		"[root] aws_api_gateway_integration.unsubscribe-lambda" -> "[root] aws_api_gateway_method.unsubscribe"
+		"[root] aws_api_gateway_integration.unsubscribe-lambda" -> "[root] aws_lambda_function.unsubscribe"
+		"[root] aws_api_gateway_method.unsubscribe" -> "[root] aws_api_gateway_resource.unsubscribe"
+		"[root] aws_api_gateway_resource.unsubscribe" -> "[root] aws_api_gateway_rest_api.default"
+		"[root] aws_api_gateway_rest_api.default" -> "[root] provider.aws"
+		"[root] aws_dynamodb_table.email-counters" -> "[root] provider.aws"
+		"[root] aws_dynamodb_table.email-subscriptions" -> "[root] provider.aws"
+		"[root] aws_iam_policy.email-receipt-lambda" -> "[root] data.aws_iam_policy_document.email-receipt-lambda"
+		"[root] aws_iam_policy.unsubscribe-lambda" -> "[root] data.aws_iam_policy_document.unsubscribe-lambda"
+		"[root] aws_iam_role.email-receipt-lambda" -> "[root] data.aws_iam_policy_document.lambda-assume-role"
+		"[root] aws_iam_role.unsubscribe-lambda" -> "[root] data.aws_iam_policy_document.lambda_apigw_assume_role"
+		"[root] aws_iam_role_policy_attachment.email-receipt-lambda" -> "[root] aws_iam_policy.email-receipt-lambda"
+		"[root] aws_iam_role_policy_attachment.email-receipt-lambda" -> "[root] aws_iam_role.email-receipt-lambda"
+		"[root] aws_iam_role_policy_attachment.unsubscribe-lambda" -> "[root] aws_iam_policy.unsubscribe-lambda"
+		"[root] aws_iam_role_policy_attachment.unsubscribe-lambda" -> "[root] aws_iam_role.unsubscribe-lambda"
+		"[root] aws_lambda_function.store-and-ack" -> "[root] aws_iam_role.email-receipt-lambda"
+		"[root] aws_lambda_function.store-and-ack" -> "[root] data.archive_file.email-receipt-lambda"
+		"[root] aws_lambda_function.unsubscribe" -> "[root] aws_iam_role.unsubscribe-lambda"
+		"[root] aws_lambda_function.unsubscribe" -> "[root] data.archive_file.unsubscribe-lambda"
+		"[root] aws_lambda_permission.allow_apigw_unsubscribe" -> "[root] aws_api_gateway_rest_api.default"
+		"[root] aws_lambda_permission.allow_apigw_unsubscribe" -> "[root] aws_lambda_function.unsubscribe"
+		"[root] aws_lambda_permission.allow_apigw_unsubscribe" -> "[root] local.account_id"
+		"[root] aws_lambda_permission.allow_apigw_unsubscribe" -> "[root] var.region"
+		"[root] aws_lambda_permission.allow_ses" -> "[root] aws_lambda_function.store-and-ack"
+		"[root] aws_lambda_permission.allow_ses" -> "[root] local.account_id"
+		"[root] aws_route53_record.beta-cname" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.campaign-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.email-mx" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.netlify-cname" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.postal-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.postal-a" -> "[root] local.postal-server-ip"
+		"[root] aws_route53_record.postal-mx-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.postal-mx-a" -> "[root] local.postal-server-ip"
+		"[root] aws_route53_record.postal-rp-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.postal-rp-a" -> "[root] local.postal-server-ip"
+		"[root] aws_route53_record.postal-sf-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.postal-sf-a" -> "[root] local.postal-server-ip"
+		"[root] aws_route53_record.psrp-cname" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.psrp-email-cname" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.routes-mx" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.speakforme-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.speakforme-mx" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.storage-a" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_record.www" -> "[root] aws_route53_zone.speakforme-in"
+		"[root] aws_route53_zone.speakforme-in" -> "[root] provider.aws"
+		"[root] aws_s3_bucket.emails" -> "[root] provider.aws"
+		"[root] aws_s3_bucket.infrastructure" -> "[root] provider.aws.mumbai"
+		"[root] aws_ses_configuration_set.default" -> "[root] provider.aws"
+		"[root] aws_ses_receipt_rule.store-and-acknowledge" -> "[root] aws_lambda_function.store-and-ack"
+		"[root] aws_ses_receipt_rule.store-and-acknowledge" -> "[root] aws_ses_receipt_rule_set.default"
+		"[root] aws_ses_receipt_rule_set.default" -> "[root] provider.aws"
+		"[root] data.archive_file.email-receipt-lambda" -> "[root] provider.archive"
+		"[root] data.archive_file.unsubscribe-lambda" -> "[root] provider.archive"
+		"[root] data.aws_caller_identity.current" -> "[root] provider.aws"
+		"[root] data.aws_iam_policy_document.email-receipt-lambda" -> "[root] aws_dynamodb_table.email-counters"
+		"[root] data.aws_iam_policy_document.email-receipt-lambda" -> "[root] aws_dynamodb_table.email-subscriptions"
+		"[root] data.aws_iam_policy_document.lambda-assume-role" -> "[root] provider.aws"
+		"[root] data.aws_iam_policy_document.lambda_apigw_assume_role" -> "[root] provider.aws"
+		"[root] data.aws_iam_policy_document.unsubscribe-lambda" -> "[root] aws_dynamodb_table.email-subscriptions"
+		"[root] local.account_id" -> "[root] data.aws_caller_identity.current"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_iam_role_policy_attachment.email-receipt-lambda"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_iam_role_policy_attachment.unsubscribe-lambda"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_lambda_permission.allow_apigw_unsubscribe"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_lambda_permission.allow_ses"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.beta-cname"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.campaign-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.email-mx"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.netlify-cname"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.postal-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.postal-mx-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.postal-rp-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.postal-sf-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.psrp-cname"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.psrp-email-cname"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.routes-mx"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.speakforme-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.speakforme-mx"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.storage-a"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_route53_record.www"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_s3_bucket.emails"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_s3_bucket.infrastructure"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_ses_configuration_set.default"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_ses_receipt_rule.store-and-acknowledge"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] output.unsubscribe_url"
+		"[root] output.unsubscribe_url" -> "[root] aws_api_gateway_deployment.default"
+		"[root] provider.archive (close)" -> "[root] data.archive_file.email-receipt-lambda"
+		"[root] provider.archive (close)" -> "[root] data.archive_file.unsubscribe-lambda"
+		"[root] provider.aws (close)" -> "[root] aws_api_gateway_deployment.default"
+		"[root] provider.aws (close)" -> "[root] aws_iam_role_policy_attachment.email-receipt-lambda"
+		"[root] provider.aws (close)" -> "[root] aws_iam_role_policy_attachment.unsubscribe-lambda"
+		"[root] provider.aws (close)" -> "[root] aws_lambda_permission.allow_apigw_unsubscribe"
+		"[root] provider.aws (close)" -> "[root] aws_lambda_permission.allow_ses"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.beta-cname"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.campaign-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.email-mx"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.netlify-cname"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.postal-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.postal-mx-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.postal-rp-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.postal-sf-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.psrp-cname"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.psrp-email-cname"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.routes-mx"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.speakforme-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.speakforme-mx"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.storage-a"
+		"[root] provider.aws (close)" -> "[root] aws_route53_record.www"
+		"[root] provider.aws (close)" -> "[root] aws_s3_bucket.emails"
+		"[root] provider.aws (close)" -> "[root] aws_ses_configuration_set.default"
+		"[root] provider.aws (close)" -> "[root] aws_ses_receipt_rule.store-and-acknowledge"
+		"[root] provider.aws.mumbai (close)" -> "[root] aws_s3_bucket.infrastructure"
+		"[root] root" -> "[root] meta.count-boundary (count boundary fixup)"
+		"[root] root" -> "[root] provider.archive (close)"
+		"[root] root" -> "[root] provider.aws (close)"
+		"[root] root" -> "[root] provider.aws.mumbai (close)"
+	}
+}
