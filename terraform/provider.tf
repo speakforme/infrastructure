@@ -1,13 +1,13 @@
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 1.37"
+  version = "~> 1.60"
   profile = "speakforme"
 }
 
 provider "aws" {
   alias   = "mumbai"
   region  = "ap-south-1"
-  version = "~> 1.37"
+  version = "~> 1.60"
   profile = "speakforme"
 }
 
