@@ -9,7 +9,7 @@ resource "aws_lambda_function" "store-and-ack" {
   function_name = "store-and-ack"
   role          = "${aws_iam_role.email-receipt-lambda.arn}"
   handler       = "lambda.handler"
-  runtime       = "nodejs8.10"
+  runtime       = "nodejs12.x"
 
   // Finishes in under 2seconds usually
   timeout          = 5
@@ -27,6 +27,6 @@ resource "aws_lambda_function" "unsubscribe" {
   function_name    = "unsubscribe"
   role             = "${aws_iam_role.unsubscribe-lambda.arn}"
   handler          = "index.handler"
-  runtime          = "nodejs8.10"
+  runtime          = "nodejs12.x"
   source_code_hash = "${base64sha256(file(data.archive_file.unsubscribe-lambda.output_path))}"
 }
