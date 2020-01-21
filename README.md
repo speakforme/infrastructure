@@ -42,6 +42,10 @@ The Lambda job:
 -   [x] Sends an acknowledgement email with a unsubscription link that has the UUID.
 -   [x] Bumps counters in another table for every email marked on the email
 
+Here's a graph:
+
+![](graph.png)
+
 The unsubscription link triggers another Lambda job which:
 
 -   [ ] Deletes the email entry from the DynamoDB using the UUID.

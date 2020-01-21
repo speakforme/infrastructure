@@ -1,0 +1,13 @@
+[ user ]-- sends email -->[ SES ]
+
+[ SES ]-- (1)write -->[ s3:speakformeemails ]
+
+[ SES ]-- (2)trigger --> [ lambda:email-receipt ]
+
+[ lambda:email-receipt ]-- write(toemail,+1) -->[ dynamodb:email-counters ]
+
+[ lambda:email-receipt ]-- write(uuid,fromemail) -->[ dynamodb:email-subscriptions ]
+
+[ lambda:email-receipt ]-- send(uuid) -->[ user ]
+
+[ user ]-- clicks unsubscribe -->[ lambda:unsubscribe ] -- delete(uuid) --> [dynamodb:email-subscriptions]
